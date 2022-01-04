@@ -1,9 +1,14 @@
 import bpy
 import math
 from mathutils import Vector
-
+import numpy as np
+import os
 
 ################# setting && init ####################
+
+def bpy_version_check():
+  print(bpy.app.version_string)
+
 
 def init_objects_data():
     for id_data in bpy.data.objects:
@@ -14,8 +19,15 @@ def single_vert_setting():
   bpy.ops.preferences.addon_enable(module="add_mesh_extra_objects")
         
 
-def pivot_setting():
-  bpy.context.scene.tool_settings.transform_pivot_point = 'CURSOR'
+def pivot_setting(): # rotate가 CURSOR를 기준으로 동작하지 않아서 사용안함
+  bpy.ops.object.mode_set(mode='EDIT')
+  previous_context = bpy.context.area.type
+  
+  bpy.context.area.type = 'VIEW_3D'
+  bpy.ops.view3d.snap_cursor_to_center() # 3d커서를 원점으로 이동
+  bpy.data.scenes["Scene"].tool_settings.transform_pivot_point = 'CURSOR'
+  
+  bpy.context.area.type = previous_context
 
 
 def create_new_plane(newName='newObj'):      # name 이란 이름의 plane생성
@@ -25,8 +37,34 @@ def create_new_plane(newName='newObj'):      # name 이란 이름의 plane생성
 
   return curObj # return 값은 전역변수에 활용할것
   
+  
+def update_object_data():
+  bpy.ops.object.mode_set(mode='OBJECT')
+  bpy.ops.object.mode_set(mode='EDIT')
+    
+    
 
 ################### info ######################
+
+'''
+def is_vector3(vector3):
+  if type(vector3) is Vector:
+    if len(vector3) == 3:
+      pass
+  elif type(vector3) is tuple or type(vector3) is list:
+    if len(vector3) == 3:
+      vector3 = Vector(vector3)
+  else:
+    print("[is_vector3] : no vector")
+    return False
+  
+  return True
+'''
+
+
+def vertex_pos(curObj, vertexIndex):
+    return curObj.data.vertices[vertexIndex].co
+
 
 def edge_to_vertex_index(curObj, edgeIndex):
 
@@ -82,11 +120,11 @@ def deselect_all():
     bpy.ops.object.mode_set(mode='EDIT')
     bpy.ops.mesh.select_all(action='DESELECT')
 
+
 def select_all():
   if bpy.context.active_object is not None:
     bpy.ops.object.mode_set(mode='EDIT')
     bpy.ops.mesh.select_all(action='SELECT')
-
 
 
 def select_additional(curObj, vertexIndex=None, edgeIndex=None):
@@ -94,7 +132,7 @@ def select_additional(curObj, vertexIndex=None, edgeIndex=None):
 
 
 def select_only(curObj, vertexIndex=None, edgeIndex=None):
-  deselect_all(curObj)
+  deselect_all()
   set_select_value(curObj=curObj, vertexIndex=vertexIndex, edgeIndex=edgeIndex, setValue=True)
 
 
@@ -121,19 +159,114 @@ def translate_all_vertex(vector3):
 
   # TODO 현재 선택되어있는 vertex list로 생성
   select_all() # Edit 모드 상태
-  bpy.ops.transform.translate(value=(x, y, z))
-  # TODO 선택되어있던 vertex list대로 다시 선택  
+  bpy.ops.transform.translate(value=(x, y, z)) # Translate가 아닌 position에 행렬을 곱하는 형태로 구현해보기
+  T=np.array(
+    [[1, 0, 0, -x],
+    [0, 1, 0, -y],
+    [0, 0, 1, -z],
+    [0, 0, 0, 1]]
+  )
+  # TODO 선택되어있던 vertex list대로 다시 선택
+  update_object_data()
 
-def rotate(value=3.141592):
-  bpy.ops.transform.rotate(value=value, orient_matrix=((1, 0, 0), (0, 1, 0), (0, 0, 1)), orient_matrix_type='GLOBAL')
+
+def rotate_X(radian=0): # counterclockwise로 동작하기 위해 value에 음의 값 부여
+  bpy.ops.transform.rotate(value=-radian, orient_axis='X', center_override=(0,0,0))
+  update_object_data()
 
 
-def rotate_specific_line():
+def rotate_Y(radian=0):
+  bpy.ops.transform.rotate(value=-radian, orient_axis='Y', center_override=(0,0,0))
+  update_object_data()
+
+
+def rotate_Z(radian=0):
+  bpy.ops.transform.rotate(value=radian, orient_axis='Z', center_override=(0,0,0))
+  update_object_data()
+
+
+def rotate_vector_to_planeXY(vector3): # vector3 하나를 입력받는다. ex) (a, b, c)
+
+  vector_on_xz=Vector((vector3.x, 0, vector3.z))  # yz평면으로의 정사영 벡터를 찾는다. ex) (a, 0, c)
+  vector_x=Vector((1,0,0))
+
+  cos_theta=vector_on_xz.dot(vector_x)/vector_on_xz.length/vector_x.length  # 해당 벡터와 y축 사이의 cos값을 구한다.
+  theta=math.acos(cos_theta)  # cos 값을 통해 해당 벡터와 y축 사이의 각을 구한다.
+
+  rotate_Y(theta) # x축을 기준으로 회전하여 xy평면 위에 위치시킨다.
+  
+    
+def rotate_vector_to_planeYZ(vector3):
+
+  vector_on_xy=Vector((vector3.x, vector3.y, 0))  # xy평면으로의 정사영
+  vector_y=Vector((0,1,0))
+
+  cos_theta=vector_on_xy.dot(vector_y)/vector_on_xy.length/vector_y.length  # 해당 벡터와 y축 사이의 cos값을 구한다.
+  theta=math.acos(cos_theta)  # cos 값 -> 사이의 각
+
+  rotate_Z(theta) # y축을 기준으로 회전하여 yz평면 위에 위치시킨다.
+
+    
+def rotate_vector_to_planeXZ(vector3):
+
+  vector_on_yz=Vector((0, vector3.y, vector3.z))  # yz평면으로의 정사영
+  vector_z=Vector((0,0,1))
+
+  cos_theta=vector_on_yz.dot(vector_z)/vector_on_yz.length/vector_z.length  # 해당 벡터와 z축 사이의 cos값을 구한다.
+  theta=math.acos(cos_theta)  # cos 값 -> 사이의 각
+  print(theta)
+
+  rotate_X(theta) # x축을 기준으로 회전하여 xz평면 위에 위치시킨다.
+
+
+def rotate_specific_line(): # 회전할 축, 회전시킬 vertex list 받아오기
     # 두 점의 좌표 알기, 해당 벡터 알기
+    # 해당 벡터가 원점을 지나도록 translate해주기 (p1이 원점에 오도록 translate 해주기)
+    # rotation 하여 z축 위에 벡터가 오도록 해주기
+    # z축을 기준으로 rotate 해주기
+    # 원상태로 복구하기 위해 rotation 하여 축을 일으켜 세우기
+    # 다시 p1만큼 translate 해주기
     # TODO
     print('hi')
 
+######## control ########
+
+def subdivide():
+  bpy.ops.mesh.subdivide()
+  update_object_data()
+  # Editmode가 아닌 경우 error 발생
+
+
+def connect_selected():
+  bpy.ops.mesh.vert_connect_path()
+  update_object_data()
+
+
+def fbx_export(name='newObj'):
+  bpy.ops.export_scene.fbx(filepath=str(os.path.dirname(os.path.realpath(__file__)))+ "\\" + name+".fbx", object_types={'MESH'}, use_mesh_modifiers=False, add_leaf_bones=False, bake_anim=False)
+
+
+bpy_version_check()
+
 init_objects_data()
+bpy.ops.mesh.primitive_plane_add(location=(0, 0, 20))
+bpy.ops.mesh.primitive_plane_add(location=(0, 10, 0))
+bpy.ops.mesh.primitive_plane_add(location=(5, 0, 0))
 curObj = create_new_plane()
-select_only(curObj, vertexIndex=0)
-deselect(curObj, vertexIndex=0)
+select_only(curObj, vertexIndex=[1,3])
+subdivide()
+select_only(curObj, vertexIndex=[0,2])
+subdivide()
+select_only(curObj, vertexIndex=[4,5])
+connect_selected()
+select_only(curObj, vertexIndex=[2,3])
+rotate_X(0.74)
+subdivide()
+select_only(curObj, vertexIndex=[6,4])
+connect_selected()
+select_all()
+
+translate_all_vertex(-vertex_pos(curObj, 4))
+
+rotate_vector_to_planeXZ(edge_to_unit_vector(curObj, 8))
+#rotate_vector_to_planeYZ(edge_to_unit_vector(curObj, 8))
