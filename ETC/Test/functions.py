@@ -63,7 +63,7 @@ def is_vector3(vector3):
 
 
 def vertex_pos(curObj, vertexIndex):
-    return curObj.data.vertices[vertexIndex].co
+    return curObj.data.vertices[vertexIndex].co.copy() # .co로 return 하는 경우 얕은복사 .copy()로 return 하는 경우 깊은복사
 
 
 def edge_to_vertex_index(curObj, edgeIndex):
@@ -181,19 +181,25 @@ def rotate_Y(radian=0):
 
 
 def rotate_Z(radian=0):
-  bpy.ops.transform.rotate(value=radian, orient_axis='Z', center_override=(0,0,0))
+  bpy.ops.transform.rotate(value=-radian, orient_axis='Z', center_override=(0,0,0))
   update_object_data()
 
 
 def rotate_vector_to_planeXY(vector3): # vector3 하나를 입력받는다. ex) (a, b, c)
 
-  vector_on_xz=Vector((vector3.x, 0, vector3.z))  # yz평면으로의 정사영 벡터를 찾는다. ex) (a, 0, c)
+  vector_on_xz=Vector((vector3.x, 0, vector3.z))  # xz평면으로의 정사영 벡터를 찾는다. ex) (a, 0, c)
   vector_x=Vector((1,0,0))
 
-  cos_theta=vector_on_xz.dot(vector_x)/vector_on_xz.length/vector_x.length  # 해당 벡터와 y축 사이의 cos값을 구한다.
+  cos_theta=vector_on_xz.dot(vector_x)/vector_on_xz.length/vector_x.length  # 해당 벡터와 x축 사이의 cos값을 구한다.
   theta=math.acos(cos_theta)  # cos 값을 통해 해당 벡터와 y축 사이의 각을 구한다.
 
-  rotate_Y(theta) # x축을 기준으로 회전하여 xy평면 위에 위치시킨다.
+  if vector3.z > 0: # 구한 각이 반시계 방향으로의 각인지 확인한다. 
+    rotate_Y(theta) # y축을 기준으로 회전하여 xy평면 위에 위치시킨다.
+  else:
+    theta = 2*math.pi - theta
+    rotate_Y(theta)
+
+  return theta
   
     
 def rotate_vector_to_planeYZ(vector3):
@@ -204,7 +210,13 @@ def rotate_vector_to_planeYZ(vector3):
   cos_theta=vector_on_xy.dot(vector_y)/vector_on_xy.length/vector_y.length  # 해당 벡터와 y축 사이의 cos값을 구한다.
   theta=math.acos(cos_theta)  # cos 값 -> 사이의 각
 
-  rotate_Z(theta) # y축을 기준으로 회전하여 yz평면 위에 위치시킨다.
+  if vector3.x > 0: # z축을 기준으로 회전하여 xz평면 위에 위치시킨다.
+    rotate_Z(theta)
+  else:
+    theta = 2*math.pi - theta
+    rotate_Z(theta)
+  
+  return theta
 
     
 def rotate_vector_to_planeXZ(vector3):
@@ -214,20 +226,47 @@ def rotate_vector_to_planeXZ(vector3):
 
   cos_theta=vector_on_yz.dot(vector_z)/vector_on_yz.length/vector_z.length  # 해당 벡터와 z축 사이의 cos값을 구한다.
   theta=math.acos(cos_theta)  # cos 값 -> 사이의 각
-  print(theta)
 
-  rotate_X(theta) # x축을 기준으로 회전하여 xz평면 위에 위치시킨다.
+  if vector3.y > 0: # x축을 기준으로 회전하여 xz평면 위에 위치시킨다.
+    rotate_X(theta)
+  else:
+    theta = 2*math.pi - theta
+    rotate_X(theta)
+
+  return theta
 
 
-def rotate_specific_line(): # 회전할 축, 회전시킬 vertex list 받아오기
-    # 두 점의 좌표 알기, 해당 벡터 알기
-    # 해당 벡터가 원점을 지나도록 translate해주기 (p1이 원점에 오도록 translate 해주기)
+def rotate_around_edge(curObj, vertexIndex, edgeIndex, angle): # 회전시킬 vertex list, 회전할 축 받아오기
+    
+    # edge를 이루는 한 vertex의 좌표 알기
+    vertexIndex_of_edge=edge_to_vertex_index(curObj, edgeIndex)
+    p1=vertex_pos(curObj, vertexIndex_of_edge[0])
+    
+    # 해당 벡터가 원점을 지나도록 translate해주기 (p1이 원점에 오도록 translate)
+    print(p1)
+    translate_all_vertex(-p1)
+
     # rotation 하여 z축 위에 벡터가 오도록 해주기
-    # z축을 기준으로 rotate 해주기
-    # 원상태로 복구하기 위해 rotation 하여 축을 일으켜 세우기
+    edgeVector=edge_to_unit_vector(curObj, edgeIndex)
+    angleZ=rotate_vector_to_planeYZ(edgeVector)
+    edgeVector=edge_to_unit_vector(curObj, edgeIndex) # rotate 이후 벡터가 바뀐것을 반영해야함
+    angleX=rotate_vector_to_planeXZ(edgeVector)
+
+    # z축을 기준으로 vertex들을 rotate 해주기
+    select_only(curObj, vertexIndex=vertexIndex)
+    rotate_Z(angle)
+
+    # z축으로 옮겼던 축을 기존 상태로 복구
+    select_all()
+    rotate_X(-angleX)
+    rotate_Z(-angleZ)
+
     # 다시 p1만큼 translate 해주기
-    # TODO
-    print('hi')
+    print(p1)
+    translate_all_vertex(p1)
+    
+    # 복구 완료
+
 
 ######## control ########
 
@@ -246,12 +285,7 @@ def fbx_export(name='newObj'):
   bpy.ops.export_scene.fbx(filepath=str(os.path.dirname(os.path.realpath(__file__)))+ "\\" + name+".fbx", object_types={'MESH'}, use_mesh_modifiers=False, add_leaf_bones=False, bake_anim=False)
 
 
-bpy_version_check()
-
 init_objects_data()
-bpy.ops.mesh.primitive_plane_add(location=(0, 0, 20))
-bpy.ops.mesh.primitive_plane_add(location=(0, 10, 0))
-bpy.ops.mesh.primitive_plane_add(location=(5, 0, 0))
 curObj = create_new_plane()
 select_only(curObj, vertexIndex=[1,3])
 subdivide()
@@ -266,7 +300,4 @@ select_only(curObj, vertexIndex=[6,4])
 connect_selected()
 select_all()
 
-translate_all_vertex(-vertex_pos(curObj, 4))
-
-rotate_vector_to_planeXZ(edge_to_unit_vector(curObj, 8))
-#rotate_vector_to_planeYZ(edge_to_unit_vector(curObj, 8))
+rotate_around_edge(curObj, vertexIndex=3, edgeIndex=8, angle=math.pi)
