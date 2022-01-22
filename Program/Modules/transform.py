@@ -5,9 +5,29 @@ import numpy as np
 import os
 
 from Modules.blenderControl import *
+from Modules.calculate import *
 
 
 ################ transform ######################
+
+def translate(vector3):
+  if type(vector3) is Vector:
+    if len(vector3) == 3:
+      pass
+    else:
+      raise
+  elif type(vector3) is tuple or type(vector3) is list:
+    if len(vector3) == 3:
+      vector3 = Vector(vector3)
+    else:
+      raise TypeError
+
+  x=vector3.x
+  y=vector3.y
+  z=vector3.z
+
+  bpy.ops.transform.translate(value=(x, y, z))
+
 
 def translate_all_vertex(vector3):
 
@@ -17,8 +37,6 @@ def translate_all_vertex(vector3):
   elif type(vector3) is tuple or type(vector3) is list:
     if len(vector3) == 3:
       vector3 = Vector(vector3)
-  else:
-    return
 
   x=vector3.x
   y=vector3.y
@@ -50,6 +68,9 @@ def rotate_Y(radian=0):
 def rotate_Z(radian=0):
   bpy.ops.transform.rotate(value=-radian, orient_axis='Z', center_override=(0,0,0))
   update_object_data()
+
+
+######## 임의의 벡터를 xyz 평면 위로 rotate ########
 
 
 def rotate_vector_to_planeXY(vector3): # vector3 하나를 입력받는다. ex) (a, b, c)
@@ -103,6 +124,8 @@ def rotate_vector_to_planeXZ(vector3):
   return theta
 
 
+###### 특정 edge에 대하여 rotate ######
+
 def rotate_around_edge(curObj, vertexIndex, edgeIndex, angle): # 회전시킬 vertex list, 회전할 축 받아오기
     
     # edge를 이루는 한 vertex의 좌표 알기
@@ -110,7 +133,6 @@ def rotate_around_edge(curObj, vertexIndex, edgeIndex, angle): # 회전시킬 ve
     p1=vertex_pos(curObj, vertexIndex_of_edge[0])
     
     # 해당 벡터가 원점을 지나도록 translate해주기 (p1이 원점에 오도록 translate)
-    print(p1)
     translate_all_vertex(-p1)
 
     # rotation 하여 z축 위에 벡터가 오도록 해주기
@@ -129,7 +151,6 @@ def rotate_around_edge(curObj, vertexIndex, edgeIndex, angle): # 회전시킬 ve
     rotate_Z(-angleZ)
 
     # 다시 p1만큼 translate 해주기
-    print(p1)
     translate_all_vertex(p1)
     
     # 복구 완료
@@ -162,9 +183,23 @@ def reflection_about_edge(curObj, vertexIndex, edgeIndex):
   rotate_around_edge(curObj, vertexIndex=vertexIndex, edgeIndex=edgeIndex, angle=math.pi)
 
 
-def internal_division(curObj, v1_index, v2_index, ratio):
-  # subdivide()
-  # 버텍스 정보를 가져옴
+def angle_bisector(curObj, vertexIndex):
+  # vertex정보 가져옴
+  p1 = vertexIndex[0]
+  p2 = vertexIndex[1]
+  p3 = vertexIndex[2]
+
   # 내분점 계산
-  # 차이만큼 translate
-  print("hi")
+  p1p2_length = (p2-p1).length
+  p2p3_length = (p3-p2).length
+  target_pos=internal_division(p1, p3, p1p2_length, p2p3_length)
+  
+  # 새로운 vertex 생성
+  select_only(p1,p3)
+  subdivide()
+  select_new_vertex()
+  
+  # 해당 위치로 translate
+  value = target_pos-p1
+  translate(value)
+
