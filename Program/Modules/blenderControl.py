@@ -1,7 +1,5 @@
 import bpy
 import math
-from mathutils import Vector
-import numpy as np
 import os
 
 ################# setting && init ####################
@@ -117,6 +115,15 @@ def select_additional(curObj, vertexIndex=None, edgeIndex=None):
 def select_only(curObj, vertexIndex=None, edgeIndex=None):
   deselect_all()
   set_select_value(curObj=curObj, vertexIndex=vertexIndex, edgeIndex=edgeIndex, setValue=True)
+
+
+def select_new_vertex():
+  curObj=bpy.context.active_object
+  update_object_data()
+  newVertexIndex=len(curObj.data.vertices)-1
+  select_only(curObj, vertexIndex=newVertexIndex)
+
+  return newVertexIndex
 
 
 def deselect(curObj, vertexIndex=None, edgeIndex=None): # 동작안함
