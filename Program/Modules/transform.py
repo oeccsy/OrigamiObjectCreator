@@ -184,22 +184,28 @@ def reflection_about_edge(curObj, vertexIndex, edgeIndex):
 
 
 def angle_bisector(curObj, vertexIndex):
+
+  if len(vertexIndex) != 3:
+    raise
+
   # vertex정보 가져옴
-  p1 = vertexIndex[0]
-  p2 = vertexIndex[1]
-  p3 = vertexIndex[2]
+  p1 = curObj.data.vertices[vertexIndex[0]].co
+  p2 = curObj.data.vertices[vertexIndex[1]].co
+  p3 = curObj.data.vertices[vertexIndex[2]].co
 
   # 내분점 계산
   p1p2_length = (p2-p1).length
   p2p3_length = (p3-p2).length
   target_pos=internal_division(p1, p3, p1p2_length, p2p3_length)
-  
+
   # 새로운 vertex 생성
-  select_only(p1,p3)
+  select_only(curObj=curObj,vertexIndex=[vertexIndex[0], vertexIndex[2]])
   subdivide()
   select_new_vertex()
   
   # 해당 위치로 translate
-  value = target_pos-p1
+  value = target_pos-curObj.data.vertices[len(curObj.data.vertices)-1].co
   translate(value)
 
+  select_additional(curObj, vertexIndex[1])
+  connect_selected()
