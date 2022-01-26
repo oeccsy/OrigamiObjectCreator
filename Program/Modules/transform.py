@@ -170,6 +170,7 @@ def rotate_edge_to_axisX(curObj, edgeIndex):
   translate_edge_to_origin(curObj, edgeIndex)
   rotate_vector_to_planeXZ()
 
+
 def reflection_about_edge(curObj, vertexIndex, edgeIndex):
   # 방법1.
   # edge를 x축 위에 위치시킴
@@ -177,9 +178,7 @@ def reflection_about_edge(curObj, vertexIndex, edgeIndex):
   # xy평면을 이용하여 대칭이동 -> z좌표의 부호 변경
   # vertex가 여러개일 경우 비효율
 
-  # 방법2. edge 직접 구해서 대칭 (각 성분 이동, translate 이용)
-
-  # 방법3. edge에 대하여 pi 만큼 rotate
+  # 방법2. edge에 대하여 pi 만큼 rotate
   rotate_around_edge(curObj, vertexIndex=vertexIndex, edgeIndex=edgeIndex, angle=math.pi)
 
 
@@ -203,6 +202,24 @@ def reflection_about_vertices(curObj, vertexIndex, vertexIndexList):
 
   translate((h-p) * 2)
 '''
+
+def create_vertex_h(curObj, vertexIndex, edgeIndex):
+
+  indexlist=edge_to_vertex_index(curObj,edgeIndex)
+  p1=tuple(curObj.data.vertices[indexlist[0]].co)
+  p2=tuple(curObj.data.vertices[indexlist[1]].co)
+
+  p=tuple(curObj.data.vertices[vertexIndex].co)
+  locus=find_locus(p1,p2)
+  h=Vector(find_point_H(p, locus))
+
+  select_only(curObj, vertexIndex=indexlist)
+  subdivide()
+  hIndex=select_new_vertex()
+  cur_h_co=curObj.data.vertices[hIndex].co
+
+  translate(h-cur_h_co)
+
 
 def angle_bisector(curObj, vertexIndex):
 
