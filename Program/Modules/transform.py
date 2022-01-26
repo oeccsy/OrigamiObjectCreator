@@ -183,6 +183,27 @@ def reflection_about_edge(curObj, vertexIndex, edgeIndex):
   rotate_around_edge(curObj, vertexIndex=vertexIndex, edgeIndex=edgeIndex, angle=math.pi)
 
 
+def reflection_about_vertex(curObj, vertexIndex, vertexIndex_midpoint):
+  m=curObj.data.vertices[vertexIndex_midpoint].co
+  p=curObj.data.vertices[vertexIndex].co
+
+  select_only(curObj, vertexIndex=vertexIndex)
+  translate((m-p+m-p))
+
+
+'''
+def reflection_about_vertices(curObj, vertexIndex, vertexIndexList):
+  # 방법3. edge 직접 구해서 대칭 (각 성분 이동, translate 이용)
+  p1=curObj.data.vertices[vertexIndexList[0]].co
+  p2=curObj.data.vertices[vertexIndexList[1]].co
+  locus = find_locus(p1, p2)
+  p=curObj.data.vertices[vertexIndex].co
+
+  h=find_point_H(p, locus)
+
+  translate((h-p) * 2)
+'''
+
 def angle_bisector(curObj, vertexIndex):
 
   if len(vertexIndex) != 3:
