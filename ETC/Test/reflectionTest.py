@@ -295,16 +295,6 @@ def reflection_about_edge(curObj, vertexIndex, edgeIndex):
   rotate_around_edge(curObj, vertexIndex=vertexIndex, edgeIndex=edgeIndex, angle=math.pi)
 
 
-def internal_division(curObj, v1_index, v2_index, ratio):
-  # subdivide()
-  # 버텍스 정보를 가져옴
-  # 내분점 계산
-  # 차이만큼 translate
-  # TODO
-  print("todo")
-
-
-
 
 ######## control ########
 

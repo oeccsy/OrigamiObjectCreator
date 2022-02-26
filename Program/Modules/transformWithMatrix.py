@@ -6,6 +6,7 @@ import os
 
 from Modules.blenderControl import *
 
+'''
 
 ################ transform ######################
 
@@ -17,8 +18,6 @@ def translate_all_vertex(vector3):
   elif type(vector3) is tuple or type(vector3) is list:
     if len(vector3) == 3:
       vector3 = Vector(vector3)
-  else:
-    return
 
   x=vector3.x
   y=vector3.y
@@ -110,7 +109,6 @@ def rotate_around_edge(curObj, vertexIndex, edgeIndex, angle): # 회전시킬 ve
     p1=vertex_pos(curObj, vertexIndex_of_edge[0])
     
     # 해당 벡터가 원점을 지나도록 translate해주기 (p1이 원점에 오도록 translate)
-    print(p1)
     translate_all_vertex(-p1)
 
     # rotation 하여 z축 위에 벡터가 오도록 해주기
@@ -129,7 +127,6 @@ def rotate_around_edge(curObj, vertexIndex, edgeIndex, angle): # 회전시킬 ve
     rotate_Z(-angleZ)
 
     # 다시 p1만큼 translate 해주기
-    print(p1)
     translate_all_vertex(p1)
     
     # 복구 완료
@@ -168,3 +165,4 @@ def internal_division(curObj, v1_index, v2_index, ratio):
   # 내분점 계산
   # 차이만큼 translate
   print("hi")
+'''

@@ -267,44 +267,6 @@ def rotate_around_edge(curObj, vertexIndex, edgeIndex, angle): # 회전시킬 ve
     
     # 복구 완료
 
-############## 추가 작성 ###############
-
-def translate_edge_to_origin(curObj, edgeIndex):
-  # edge를 이루는 한 vertex의 좌표 알기
-  vertexIndex_of_edge=edge_to_vertex_index(curObj, edgeIndex)
-  p1=vertex_pos(curObj, vertexIndex_of_edge[0])
-    
-  # 해당 벡터가 원점을 지나도록 translate해주기 (p1이 원점에 오도록 translate)
-  translate_all_vertex(-p1)
-
-
-def rotate_edge_to_axisX(curObj, edgeIndex):
-  translate_edge_to_origin(curObj, edgeIndex)
-  rotate_vector_to_planeXZ()
-
-def reflection_about_edge(curObj, vertexIndex, edgeIndex):
-  # 방법1.
-  # edge를 x축 위에 위치시킴
-  # reflection할 vertex를 xz평면에 위치시킴
-  # xy평면을 이용하여 대칭이동 -> z좌표의 부호 변경
-  # vertex가 여러개일 경우 비효율
-
-  # 방법2. edge 직접 구해서 대칭 (각 성분 이동, translate 이용)
-
-  # 방법3. edge에 대하여 pi 만큼 rotate
-  rotate_around_edge(curObj, vertexIndex=vertexIndex, edgeIndex=edgeIndex, angle=math.pi)
-
-
-def internal_division(curObj, v1_index, v2_index, ratio):
-  # subdivide()
-  # 버텍스 정보를 가져옴
-  # 내분점 계산
-  # 차이만큼 translate
-  # TODO
-  print("todo")
-
-
-
 
 ######## control ########
 
@@ -328,20 +290,51 @@ curObj = create_new_plane()
 select_only(curObj, vertexIndex=[0,3])
 connect_selected()
 
+rotate_around_edge(curObj, vertexIndex=1, edgeIndex=4, angle=-math.pi+0.03)
 
+select_only(curObj, vertexIndex=[0,3])
+subdivide()
 
+select_only(curObj, vertexIndex=[1,4])
+connect_selected()
 
 select_only(curObj, vertexIndex=[1,3])
 subdivide()
-select_only(curObj, vertexIndex=[0,2])
+select_only(curObj, vertexIndex=[2,3])
 subdivide()
+
 select_only(curObj, vertexIndex=[4,5])
 connect_selected()
-select_only(curObj, vertexIndex=[2,3])
-rotate_X(0.74)
-subdivide()
-select_only(curObj, vertexIndex=[6,4])
+select_only(curObj, vertexIndex=[4,6])
 connect_selected()
-select_all()
 
-rotate_around_edge(curObj, vertexIndex=3, edgeIndex=8, angle=math.pi)
+rotate_around_edge(curObj, vertexIndex=3, edgeIndex=9, angle=math.pi-0.03)
+rotate_around_edge(curObj, vertexIndex=5, edgeIndex=4, angle=math.pi)
+
+select_only(curObj, vertexIndex=[0,2])
+subdivide()
+select_only(curObj, vertexIndex=[4,7])
+connect_selected()
+select_only(curObj, vertexIndex=[0,1])
+subdivide()
+select_only(curObj, vertexIndex=[4,8])
+connect_selected()
+
+rotate_around_edge(curObj, vertexIndex=0, edgeIndex=12, angle=math.pi-0.03)
+rotate_around_edge(curObj, vertexIndex=7, edgeIndex=5, angle=math.pi)
+
+# 5v reflection to 4l
+#select_only(curObj, vertexIndex=[1,3])
+#subdivide()
+#select_only(curObj, vertexIndex=[0,2])
+#subdivide()
+#select_only(curObj, vertexIndex=[4,5])
+#connect_selected()
+#select_only(curObj, vertexIndex=[2,3])
+#rotate_X(0.74)
+#subdivide()
+#select_only(curObj, vertexIndex=[6,4])
+#connect_selected()
+#select_all()
+
+#rotate_around_edge(curObj, vertexIndex=3, edgeIndex=8, angle=math.pi)
