@@ -28,7 +28,7 @@ def pivot_setting(): # rotate가 CURSOR를 기준으로 동작하지 않아서 �
   bpy.context.area.type = previous_context
 
 
-def create_new_plane(newName='newObj'):      # name 이란 이름의 plane생성
+def create_new_plane(newName='NewObj'):      # name 이란 이름의 plane생성
   bpy.ops.mesh.primitive_plane_add(location=(0, 0, 0))
   curObj=bpy.context.active_object
   curObj.name=newName
