@@ -29,17 +29,19 @@ def get_selected_objs():
 # bmesh : 복잡한 메시 조작 작업을 수행하는 데 사용하는 모듈
 
 def select_vertices(index_list=[]):
+  bpy.ops.object.mode_set(mode = 'OBJECT')
   obj = bpy.context.active_object
   
   bpy.ops.object.mode_set(mode='EDIT')
-  bpy.ops.mesh.select_all(action='DESELECT')
   bpy.context.tool_settings.mesh_select_mode = (True, False, False)
+  bpy.ops.mesh.select_all(action='DESELECT')
   
   # 메시 데이터를 수정하기 위해 bmesh 불러오기
   bm = bmesh.from_edit_mesh(obj.data)
   
   # 모든 선택 해제
   bm.select_flush(False)
+  bm.verts.ensure_lookup_table()
   
   # 엣지 선택
   for index in index_list:
@@ -51,21 +53,21 @@ def select_vertices(index_list=[]):
   # 메모리 해제
   bm.free()
   
-  bpy.ops.object.mode_set(mode='OBJECT')
-  
 
 def select_edge(index_list=[]):
+  bpy.ops.object.mode_set(mode = 'OBJECT')
   obj = bpy.context.active_object
   
   bpy.ops.object.mode_set(mode='EDIT')
+  bpy.context.tool_settings.mesh_select_mode = (False, True, False)
   bpy.ops.mesh.select_all(action='DESELECT')
   
   # 메시 데이터를 수정하기 위해 bmesh 불러오기
   bm = bmesh.from_edit_mesh(obj.data)
-  bpy.context.tool_settings.mesh_select_mode = (False, True, False)
   
   # 모든 선택 해제
   bm.select_flush(False)
+  bm.edges.ensure_lookup_table()
   
   # 엣지 선택
   for index in index_list:
@@ -76,7 +78,5 @@ def select_edge(index_list=[]):
   
   # 메모리 해제
   bm.free()
-  
-  bpy.ops.object.mode_set(mode='OBJECT')
   
   
