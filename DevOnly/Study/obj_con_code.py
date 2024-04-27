@@ -24,9 +24,35 @@ def get_selected_objs():
   return bpy.context.selected_objects
 
 
-### edge 선택
+### vertex / edge 선택
 # bmesh 모듈을 이용
 # bmesh : 복잡한 메시 조작 작업을 수행하는 데 사용하는 모듈
+
+def select_vertices(index_list=[]):
+  obj = bpy.context.active_object
+  
+  bpy.ops.object.mode_set(mode='EDIT')
+  bpy.ops.mesh.select_all(action='DESELECT')
+  bpy.context.tool_settings.mesh_select_mode = (True, False, False)
+  
+  # 메시 데이터를 수정하기 위해 bmesh 불러오기
+  bm = bmesh.from_edit_mesh(obj.data)
+  
+  # 모든 선택 해제
+  bm.select_flush(False)
+  
+  # 엣지 선택
+  for index in index_list:
+    bm.verts[index].select_set(True)
+
+  # 변경된 선택 사항을 메시에 적용
+  bmesh.update_edit_mesh(obj.data)
+  
+  # 메모리 해제
+  bm.free()
+  
+  bpy.ops.object.mode_set(mode='OBJECT')
+  
 
 def select_edge(index_list=[]):
   obj = bpy.context.active_object
@@ -36,6 +62,7 @@ def select_edge(index_list=[]):
   
   # 메시 데이터를 수정하기 위해 bmesh 불러오기
   bm = bmesh.from_edit_mesh(obj.data)
+  bpy.context.tool_settings.mesh_select_mode = (False, True, False)
   
   # 모든 선택 해제
   bm.select_flush(False)
