@@ -1,5 +1,7 @@
 import bpy
 import bmesh
+import math
+from mathutils import Matrix
 
 ### obj 선택
 
@@ -140,3 +142,15 @@ def subdivide_edge(index):
   bmesh.update_edit_mesh(obj.data) 
   bm.free()
   
+
+def rotation_matrix(axis, theta): # 로드리게스 회전, 반시계 방향으로 회전
+    axis.normalize()
+    a, b, c = axis
+    
+    I = mathutils.Matrix.Identity(3)
+    K = mathutils.Matrix([[0, -c, b],
+                          [c, 0, -a],
+                          [-b, a, 0]])
+    R = I + math.sin(theta) * K + (1 - math.cos(theta)) * K @ K
+    
+    return R
