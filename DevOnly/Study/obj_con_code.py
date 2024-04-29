@@ -1,7 +1,8 @@
 import bpy
 import bmesh
 import math
-from mathutils import Matrix
+import mathutils
+
 
 ### obj 선택
 
@@ -46,8 +47,11 @@ def select_vertices(index_list=[]):
   bm.verts.ensure_lookup_table()
   
   # 엣지 선택
+  selected_verts = []
+  
   for index in index_list:
     bm.verts[index].select_set(True)
+    selected_verts.append(selected_verts)
 
   # 변경된 선택 사항을 메시에 적용
   bmesh.update_edit_mesh(obj.data)
@@ -55,8 +59,10 @@ def select_vertices(index_list=[]):
   # 메모리 해제
   bm.free()
   
+  return selected_verts
+  
 
-def select_edge(index_list=[]):
+def select_edges(index_list=[]):
   bpy.ops.object.mode_set(mode = 'OBJECT')
   obj = bpy.context.active_object
   
@@ -72,14 +78,50 @@ def select_edge(index_list=[]):
   bm.edges.ensure_lookup_table()
   
   # 엣지 선택
+  selected_edges = []
+  
   for index in index_list:
     bm.edges[index].select = True
+    selected_edges.append(bm.edges[index])
 
-# 변경된 선택 사항을 메시에 적용
+  #변경된 선택 사항을 메시에 적용
   bmesh.update_edit_mesh(obj.data)
   
   # 메모리 해제
   bm.free()
+  
+  return selected_edges
+  
+  
+def select_faces(index_list=[]):
+  bpy.ops.object.mode_set(mode = 'OBJECT')
+  obj = bpy.context.active_object
+  
+  bpy.ops.object.mode_set(mode='EDIT')
+  bpy.context.tool_settings.mesh_select_mode = (False, False, True)
+  bpy.ops.mesh.select_all(action='DESELECT')
+  
+  # 메시 데이터를 수정하기 위해 bmesh 불러오기
+  bm = bmesh.from_edit_mesh(obj.data)
+  
+  # 모든 선택 해제fro
+  bm.select_flush(False)
+  bm.faces.ensure_lookup_table()
+  
+  # 엣지 선택
+  selected_faces = []
+  
+  for index in index_list:
+    bm.faces[index].select = True
+    selected_faces.append(bm.faces[index])
+
+  #변경된 선택 사항을 메시에 적용
+  bmesh.update_edit_mesh(obj.data)
+  
+  # 메모리 해제
+  bm.free()
+  
+  return selected_faces
   
 
 ### subdivide
@@ -141,7 +183,11 @@ def subdivide_edge(index):
                             )                          
   bmesh.update_edit_mesh(obj.data) 
   bm.free()
-  
+
+def get_vert_vec(index):
+  bpy.ops.object.mode_set(mode = 'OBJECT')
+  obj = bpy.context.active_object
+  return obj.data.vertices[index].co
 
 def get_edge_vec(index):
   bpy.ops.object.mode_set(mode = 'OBJECT')
@@ -166,7 +212,19 @@ def get_edge_vec(index):
   bm.free()
   
   return v2 - v1
-  
+
+
+def get_face_normal(index):
+  bpy.ops.object.mode_set(mode = 'OBJECT')
+  obj = bpy.context.active_object
+  return obj.data.polygons[index].normal
+
+
+def get_face_center(index):
+  bpy.ops.object.mode_set(mode = 'OBJECT')
+  obj = bpy.context.active_object
+  return obj.data.polygons[index].center
+
 
 def rotation_matrix(axis, theta): # 로드리게스 회전, 반시계 방향으로 회전
     axis.normalize()
@@ -179,6 +237,7 @@ def rotation_matrix(axis, theta): # 로드리게스 회전, 반시계 방향으�
     R = I + math.sin(theta) * K + (1 - math.cos(theta)) * K @ K
     
     return R
+
 def rotate_with_matrix(R, index):
   bpy.ops.object.mode_set(mode = 'OBJECT')
   obj = bpy.context.active_object
