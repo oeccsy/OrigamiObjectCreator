@@ -179,3 +179,36 @@ def rotation_matrix(axis, theta): # 로드리게스 회전, 반시계 방향으�
     R = I + math.sin(theta) * K + (1 - math.cos(theta)) * K @ K
     
     return R
+def rotate_with_matrix(R, index):
+  bpy.ops.object.mode_set(mode = 'OBJECT')
+  obj = bpy.context.active_object
+
+  bpy.ops.object.mode_set(mode='EDIT')
+  bpy.ops.mesh.select_all(action='DESELECT')
+  bpy.context.tool_settings.mesh_select_mode = (True, False, False)
+
+  bm = bmesh.from_edit_mesh(obj.data)
+
+  bm.select_flush(False)
+  bm.edges.ensure_lookup_table()
+  
+  bm.edges[index].select_set(True)
+  bmesh.update_edit_mesh(obj.data) 
+  
+  edge = bm.edges[index]
+  for vert in edge.verts:
+      vert.co = R @ vert.co
+  
+  bm.free()    
+
+#subdivide_edges([0,2])
+
+#select_edges([3])
+#axis = get_edge_vec(6)
+
+#print(axis)
+
+# 회전 행렬 생성
+#R = mathutils.Matrix.Rotation(math.pi * 0.99, 3, axis)
+
+#rotate_with_matrix(R, 3)
