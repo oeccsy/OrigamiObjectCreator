@@ -143,6 +143,31 @@ def subdivide_edge(index):
   bm.free()
   
 
+def get_edge_vec(index):
+  bpy.ops.object.mode_set(mode = 'OBJECT')
+  obj = bpy.context.active_object
+
+  bpy.ops.object.mode_set(mode='EDIT')
+  bpy.ops.mesh.select_all(action='DESELECT')
+  bpy.context.tool_settings.mesh_select_mode = (True, False, False)
+
+  bm = bmesh.from_edit_mesh(obj.data)
+
+  bm.select_flush(False)
+  bm.edges.ensure_lookup_table()
+  
+  bm.edges[index].select_set(True)
+  bmesh.update_edit_mesh(obj.data) 
+  
+  edge = bm.edges[index]
+  v1 = edge.verts[0].co
+  v2 = edge.verts[1].co
+  
+  bm.free()
+  
+  return v2 - v1
+  
+
 def rotation_matrix(axis, theta): # 로드리게스 회전, 반시계 방향으로 회전
     axis.normalize()
     a, b, c = axis
