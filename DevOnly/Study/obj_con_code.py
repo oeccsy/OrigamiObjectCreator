@@ -260,6 +260,9 @@ def rotate_with_matrix(R, index):
   
   bm.free()    
 
+def bisect():
+  bpy.ops.mesh.bisect(plane_co=(0.0, 0.0, 0.0), plane_no=(1.0, 0.0, 0.0), use_fill=False, clear_inner=False, clear_outer=False, threshold=0.0001, xstart=10, xend=-10, ystart=10, yend=-10)
+  
 #subdivide_edges([0,2])
 
 #select_edges([3])
