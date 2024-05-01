@@ -1,5 +1,8 @@
 import bpy
 import bmesh
+import mathutils
+import math
+
 from mathutils.geometry import *
 
 def v2v_fold():
@@ -34,12 +37,20 @@ def triangle_fold(v1_index, v2_index):
   
   for face in v1.link_faces:
       face.select_set(True)
-    
+        
   bpy.ops.mesh.bisect(plane_co=bisect_point, plane_no=v1v2)
   
   bm.verts.ensure_lookup_table()
   bm.edges.ensure_lookup_table()
   bm.faces.ensure_lookup_table()
+  
+  new_edge = bm.edges[-1]
+  axis = new_edge.verts[0].co - new_edge.verts[1].co
+  
+  R = mathutils.Matrix.Rotation(math.pi * 0.995, 3, axis)
+
+  v1.co = R @ v1.co
+  
   bm.free()
   
 
@@ -99,31 +110,6 @@ def test_triangle_fold(v1, v2):
   bm.verts.ensure_lookup_table()
   bm.free()
 
-bpy.ops.object.mode_set(mode = 'OBJECT')
-obj = bpy.context.active_object
-  
-bpy.ops.object.mode_set(mode='EDIT')
-bpy.context.tool_settings.mesh_select_mode = (True, False, False)
-bpy.ops.mesh.select_all(action='DESELECT')
-  
-# 메시 데이터를 수정하기 위해 bmesh 불러오기
-bm = bmesh.from_edit_mesh(obj.data)
-  
-# 모든 선택 해제
-bm.select_flush(False)
-bm.verts.ensure_lookup_table()
-  
-# vertex 선택
-v1 = bm.verts[1]
-v2 = bm.verts[2]
-
-v1_index = v1.index
-v2_index = v2.index
-# 변경된 선택 사항을 메시에 적용
-bmesh.update_edit_mesh(obj.data)
-
-# 메모리 해제
-bm.free()
-
-triangle_fold(v1_index, v2_index)
+triangle_fold(1, 2)
+triangle_fold(0, 3)
 
