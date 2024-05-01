@@ -11,6 +11,41 @@ def v2v_fold():
 def e2e_fold():
   return 1
 
+def perpendicular_bisect(v1_index, v2_index):
+  bpy.ops.object.mode_set(mode = 'OBJECT')
+  obj = bpy.context.active_object
+  
+  bpy.ops.object.mode_set(mode='EDIT')
+  bpy.context.tool_settings.mesh_select_mode = (False, False, True)
+  bpy.ops.mesh.select_all(action='DESELECT')
+  
+  bm = bmesh.from_edit_mesh(obj.data)
+
+  bm.select_flush(False)
+  bm.verts.ensure_lookup_table()
+  bm.edges.ensure_lookup_table()
+  bm.faces.ensure_lookup_table()
+  
+  v1 = bm.verts[v1_index]
+  v2 = bm.verts[v2_index]
+    
+  vec1 = v1.co
+  vec2 = v2.co
+  
+  bisect_point = (vec1 + vec2) / 2
+  v1v2 = vec2-vec1
+  
+  for face in v1.link_faces:
+      face.select_set(True)
+        
+  bpy.ops.mesh.bisect(plane_co=bisect_point, plane_no=v1v2)
+  
+  bm.verts.ensure_lookup_table()
+  bm.edges.ensure_lookup_table()
+  bm.faces.ensure_lookup_table()
+  
+  bm.free()
+
 def triangle_fold(v1_index, v2_index):
   bpy.ops.object.mode_set(mode = 'OBJECT')
   obj = bpy.context.active_object
@@ -111,5 +146,4 @@ def test_triangle_fold(v1, v2):
   bm.free()
 
 triangle_fold(1, 2)
-triangle_fold(0, 3)
 
