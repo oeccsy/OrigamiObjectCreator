@@ -122,8 +122,6 @@ def icecream_fold(e1_index, e2_index):
   
   bpy.ops.mesh.bisect(plane_co=intersection_point, plane_no=bisect_plane_normal)
   
-  print(intersection_point)
-  
   bm.verts.ensure_lookup_table()
   bm.edges.ensure_lookup_table()
   bm.faces.ensure_lookup_table()
