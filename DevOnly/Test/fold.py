@@ -140,8 +140,52 @@ def icecream_fold(e1_index, e2_index):
   
   bm.free()
 
-def door_fold(edge1, edge2):
-  return 1
+def door_fold(e1_index, e2_index):
+  bpy.ops.object.mode_set(mode = 'OBJECT')
+  obj = bpy.context.active_object
+  
+  bpy.ops.object.mode_set(mode='EDIT')
+  bpy.context.tool_settings.mesh_select_mode = (False, False, True)
+  bpy.ops.mesh.select_all(action='DESELECT')
+  
+  bm = bmesh.from_edit_mesh(obj.data)
+
+  bm.select_flush(False)
+  bm.verts.ensure_lookup_table()
+  bm.edges.ensure_lookup_table()
+  bm.faces.ensure_lookup_table()
+  
+  e1 = bm.edges[e1_index]
+  e2 = bm.edges[e2_index]
+  
+  e1_middle = (e1.verts[0].co + e1.verts[1].co) / 2
+  e2_middle = (e2.verts[0].co + e2.verts[1].co) / 2
+  
+  bisect_point = (e1_middle + e2_middle) / 2
+  bisect_plane_normal = (e2_middle - e1_middle).normalized()
+
+  for face in bm.faces:
+    face.select_set(True)
+  
+  bpy.ops.mesh.bisect(plane_co=bisect_point, plane_no=bisect_plane_normal)
+  
+  bm.verts.ensure_lookup_table()
+  bm.edges.ensure_lookup_table()
+  bm.faces.ensure_lookup_table()
+  
+  new_edge = bm.edges[-1]
+  axis = new_edge.verts[0].co - new_edge.verts[1].co
+  
+  Ti = mathutils.Matrix.Translation(new_edge.verts[0].co * -1)
+  R = mathutils.Matrix.Rotation(math.pi * 0.995, 4, axis)
+  T = mathutils.Matrix.Translation(new_edge.verts[0].co)
+  
+  TRTi = T @ R @ Ti
+
+  for vert in e1.verts:
+      vert.co = TRTi @ vert.co
+  
+  bm.free()
 
 def fish_fold():
   return 1
@@ -193,5 +237,4 @@ def test_triangle_fold(v1, v2):
   bm.verts.ensure_lookup_table()
   bm.free()
 
-perpendicular_bisect(1,2)
-icecream_fold(2,4)
+door_fold(0,2)
