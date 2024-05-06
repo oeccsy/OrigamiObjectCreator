@@ -182,8 +182,15 @@ def door_fold(e1_index, e2_index):
   
   TRTi = T @ R @ Ti
 
+  target_indices = set()
   for vert in e1.verts:
-      vert.co = TRTi @ vert.co
+      for link_edge in vert.link_edges:
+          for target_vert in link_edge.verts:
+              target_indices.add(target_vert.index)
+
+  for index in target_indices:
+      target_vert = bm.verts[index]
+      target_vert.co = TRTi @ target_vert.co
   
   bm.free()
 
@@ -238,3 +245,4 @@ def test_triangle_fold(v1, v2):
   bm.free()
 
 door_fold(0,2)
+door_fold(1,5)
