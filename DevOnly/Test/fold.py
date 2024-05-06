@@ -203,46 +203,5 @@ def double_boat_fold():
 def pocket_fold():
   return 1
 
-def test_triangle_fold(v1, v2):
-  vec1 = v1.co
-  vec2 = v2.co
-  
-  v1v2 = vec2-vec1
-  n = v1.normal
-  
-  bisect_vec = n.cross(v1v2)
-  bisect_point = (vec1 + vec2) / 2
-  
-  adj_edges = [e for e in v1.link_edges]
-  intersection_points = [] 
-  
-  for edge in adj_edges:
-      edge_start, edge_end = [v.co for v in edge.verts]
-      intersection_point = intersect_line_line(bisect_point, bisect_point + bisect_vec, edge_start, edge_end)
-      intersection_points.append(intersection_point[0])
-
-  bpy.ops.object.mode_set(mode = 'OBJECT')
-  obj = bpy.context.active_object
-  
-  bpy.ops.object.mode_set(mode='EDIT')
-  bpy.context.tool_settings.mesh_select_mode = (True, False, False)
-  bpy.ops.mesh.select_all(action='DESELECT')
-  
-  # 메시 데이터를 수정하기 위해 bmesh 불러오기
-  bm = bmesh.from_edit_mesh(obj.data)
-  
-  # 모든 선택 해제
-  bm.select_flush(False)
-  bm.verts.ensure_lookup_table()
-
-  # print(intersection_points[0])
-  # bm.verts.new(intersection_points[0])
-  # bm.verts.new(intersection_points[1])
-  
-  bpy.ops.mesh.bisect(plane_co=(0.0, 0.0, 0.0), plane_no=v1v2, use_fill=False, clear_inner=False, clear_outer=False, threshold=0.0001, xstart=10, xend=-10, ystart=10, yend=-10)
-  
-  bm.verts.ensure_lookup_table()
-  bm.free()
-
 door_fold(0,2)
 door_fold(1,5)
