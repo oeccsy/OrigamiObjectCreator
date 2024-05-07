@@ -113,7 +113,7 @@ def triangle_fold(v1_index, v2_index):
   new_edge = bm.edges[-1]
   axis = new_edge.verts[0].co - new_edge.verts[1].co
   
-  R = mathutils.Matrix.Rotation(math.pi * 0.995, 3, axis)
+  R = mathutils.Matrix.Rotation(math.pi, 3, axis)
 
   v1.co = R @ v1.co
   
@@ -161,7 +161,7 @@ def icecream_fold(e1_index, e2_index):
   axis = new_edge.verts[0].co - new_edge.verts[1].co
   
   Ti = mathutils.Matrix.Translation(intersection_point * -1)
-  R = mathutils.Matrix.Rotation(math.pi * 0.995, 4, axis)
+  R = mathutils.Matrix.Rotation(math.pi, 4, axis)
   T = mathutils.Matrix.Translation(intersection_point)
   
   TRTi = T @ R @ Ti
@@ -208,7 +208,7 @@ def door_fold(e1_index, e2_index):
   axis = new_edge.verts[0].co - new_edge.verts[1].co
   
   Ti = mathutils.Matrix.Translation(new_edge.verts[0].co * -1)
-  R = mathutils.Matrix.Rotation(math.pi * 0.995, 4, axis)
+  R = mathutils.Matrix.Rotation(math.pi, 4, axis)
   T = mathutils.Matrix.Translation(new_edge.verts[0].co)
   
   TRTi = T @ R @ Ti
@@ -287,7 +287,7 @@ def rotate_v_around_e(v_index, e_index, angle=math.pi):
   axis_point = (e.verts[0].co + e.verts[1].co) / 2
   
   Ti = mathutils.Matrix.Translation(axis_point * -1)
-  R = mathutils.Matrix.Rotation(angle * 0.995, 4, axis)
+  R = mathutils.Matrix.Rotation(angle, 4, axis)
   T = mathutils.Matrix.Translation(axis_point)
   
   TRTi = T @ R @ Ti
