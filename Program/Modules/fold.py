@@ -263,3 +263,35 @@ def reverse_fold(v_index, e_indices):
   target_vertex.co = TRTi @ target_vertex.co
   
   bm.free()
+  
+
+def rotate_v_around_e(v_index, e_index):
+  bpy.ops.object.mode_set(mode = 'OBJECT')
+  obj = bpy.context.active_object
+  
+  bpy.ops.object.mode_set(mode='EDIT')
+  bpy.context.tool_settings.mesh_select_mode = (False, False, True)
+  bpy.ops.mesh.select_all(action='DESELECT')
+  
+  bm = bmesh.from_edit_mesh(obj.data)
+
+  bm.select_flush(False)
+  bm.verts.ensure_lookup_table()
+  bm.edges.ensure_lookup_table()
+  bm.faces.ensure_lookup_table()
+  
+  v = bm.verts[v_index]
+  e = bm.edges[e_index]
+
+  axis = (e.verts[1].co - e.verts[0].co).normalized()
+  axis_point = (e.verts[0].co + e.verts[1].co) / 2
+  
+  Ti = mathutils.Matrix.Translation(axis_point * -1)
+  R = mathutils.Matrix.Rotation(math.pi, 4, axis)
+  T = mathutils.Matrix.Translation(axis_point)
+  
+  TRTi = T @ R @ Ti
+
+  v.co = TRTi @ v.co
+  
+  bm.free()
