@@ -27,8 +27,8 @@ def perpendicular_bisect(v1_index, v2_index):
   bisect_point = (vec1 + vec2) / 2
   v1v2 = vec2-vec1
   
-  for face in v1.link_faces:
-      face.select_set(True)
+  for face in bm.faces:
+    face.select_set(True)
         
   bpy.ops.mesh.bisect(plane_co=bisect_point, plane_no=v1v2)
   
