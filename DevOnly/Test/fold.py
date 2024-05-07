@@ -45,6 +45,45 @@ def perpendicular_bisect(v1_index, v2_index):
   bm.faces.ensure_lookup_table()
   
   bm.free()
+  
+def angle_bisect(e1_index, e2_index):
+  bpy.ops.object.mode_set(mode = 'OBJECT')
+  obj = bpy.context.active_object
+  
+  bpy.ops.object.mode_set(mode='EDIT')
+  bpy.context.tool_settings.mesh_select_mode = (False, False, True)
+  bpy.ops.mesh.select_all(action='DESELECT')
+  
+  bm = bmesh.from_edit_mesh(obj.data)
+
+  bm.select_flush(False)
+  bm.verts.ensure_lookup_table()
+  bm.edges.ensure_lookup_table()
+  bm.faces.ensure_lookup_table()
+  
+  e1 = bm.edges[e1_index]
+  e2 = bm.edges[e2_index]
+  
+  e1_unit = (e1.verts[1].co - e1.verts[0].co).normalized()
+  e2_unit = (e2.verts[1].co - e2.verts[0].co).normalized()
+  
+  angle_bisector = (e1_unit + e2_unit)
+  face_normal = e1_unit.cross(e2_unit)
+  bisect_plane_normal = angle_bisector.cross(face_normal).normalized()
+  
+  intersection_points = intersect_line_line(e1.verts[0].co, e1.verts[1].co, e2.verts[0].co, e2.verts[1].co)
+  intersection_point = intersection_points[0]
+  
+  for face in bm.faces:
+    face.select_set(True)
+  
+  bpy.ops.mesh.bisect(plane_co=intersection_point, plane_no=bisect_plane_normal)
+  
+  bm.verts.ensure_lookup_table()
+  bm.edges.ensure_lookup_table()
+  bm.faces.ensure_lookup_table()
+  
+  bm.free()
 
 def triangle_fold(v1_index, v2_index):
   bpy.ops.object.mode_set(mode = 'OBJECT')
