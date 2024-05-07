@@ -317,7 +317,7 @@ def v1v2_axis_fold(v_index, v1_index, v2_index, angle=math.pi):
   
   v1v2 = v2.co - v1.co
   
-  bisect_point = (v1 + v2) / 2
+  bisect_point = (v1.co + v2.co) / 2
   bisect_plane_normal = vv1.cross(vv2).cross(v1v2).normalized()
 
   for face in bm.faces:
