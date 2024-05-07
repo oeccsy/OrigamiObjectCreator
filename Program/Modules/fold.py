@@ -76,6 +76,34 @@ def angle_bisect(e1_index, e2_index):
   bm.faces.ensure_lookup_table()
   
   bm.free()
+  
+  
+def bisect(plane_co, plane_no):
+  bpy.ops.object.mode_set(mode = 'OBJECT')
+  obj = bpy.context.active_object
+  
+  bpy.ops.object.mode_set(mode='EDIT')
+  bpy.context.tool_settings.mesh_select_mode = (False, False, True)
+  bpy.ops.mesh.select_all(action='DESELECT')
+  
+  bm = bmesh.from_edit_mesh(obj.data)
+
+  bm.select_flush(False)
+  bm.verts.ensure_lookup_table()
+  bm.edges.ensure_lookup_table()
+  bm.faces.ensure_lookup_table()
+  
+  for face in bm.faces:
+    face.select_set(True)
+  
+  bpy.ops.mesh.bisect(plane_co=plane_co, plane_no=plane_no)
+  
+  bm.verts.ensure_lookup_table()
+  bm.edges.ensure_lookup_table()
+  bm.faces.ensure_lookup_table()
+  
+  bm.free()
+
 
 def triangle_fold(v1_index, v2_index):
   bpy.ops.object.mode_set(mode = 'OBJECT')
