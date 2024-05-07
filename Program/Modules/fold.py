@@ -263,8 +263,111 @@ def reverse_fold(v_index, e_indices):
   target_vertex.co = TRTi @ target_vertex.co
   
   bm.free()
-  
 
+
+def axis_fold(v_index, v1_index, v2_index, angle=math.pi):
+  bpy.ops.object.mode_set(mode = 'OBJECT')
+  obj = bpy.context.active_object
+  
+  bpy.ops.object.mode_set(mode='EDIT')
+  bpy.context.tool_settings.mesh_select_mode = (False, False, True)
+  bpy.ops.mesh.select_all(action='DESELECT')
+  
+  bm = bmesh.from_edit_mesh(obj.data)
+
+  bm.select_flush(False)
+  bm.verts.ensure_lookup_table()
+  bm.edges.ensure_lookup_table()
+  bm.faces.ensure_lookup_table()
+  
+  v = bm.verts[v_index]
+  v1 = bm.verts[v1_index]
+  v2 = bm.verts[v2_index]
+  
+  vv1 = v1.co - v.co
+  vv2 = v2.co - v.co
+  
+  v1v2 = v2.co - v1.co
+  
+  bisect_point = (v1 + v2) / 2
+  bisect_plane_normal = vv1.cross(vv2).cross(v1v2).normalized()
+
+  for face in bm.faces:
+    face.select_set(True)
+  
+  bpy.ops.mesh.bisect(plane_co=bisect_point, plane_no=bisect_plane_normal)
+
+  bm.verts.ensure_lookup_table()
+  bm.edges.ensure_lookup_table()
+  bm.faces.ensure_lookup_table()
+  
+  new_edge = bm.edges[-1]
+  axis = new_edge.verts[0].co - new_edge.verts[1].co
+  
+  Ti = mathutils.Matrix.Translation(new_edge.verts[0].co * -1)
+  R = mathutils.Matrix.Rotation(angle, 4, axis)
+  T = mathutils.Matrix.Translation(new_edge.verts[0].co)
+  
+  TRTi = T @ R @ Ti
+
+  target_vertex = bm.verts[v_index]
+  target_vertex.co = TRTi @ target_vertex.co
+  
+  bm.free()
+
+
+def axis_fold(v_index, e_index, angle=math.pi):
+  bpy.ops.object.mode_set(mode = 'OBJECT')
+  obj = bpy.context.active_object
+  
+  bpy.ops.object.mode_set(mode='EDIT')
+  bpy.context.tool_settings.mesh_select_mode = (False, False, True)
+  bpy.ops.mesh.select_all(action='DESELECT')
+  
+  bm = bmesh.from_edit_mesh(obj.data)
+
+  bm.select_flush(False)
+  bm.verts.ensure_lookup_table()
+  bm.edges.ensure_lookup_table()
+  bm.faces.ensure_lookup_table()
+  
+  v = bm.verts[v_index]  
+  e = bm.edges[e_index]
+
+  v1 = e.verts[0]
+  v2 = e.verts[1]
+  
+  vv1 = v1.co - v.co
+  vv2 = v2.co - v.co
+  
+  v1v2 = v2.co - v1.co
+  
+  bisect_point = (v1 + v2) / 2
+  bisect_plane_normal = vv1.cross(vv2).cross(v1v2).normalized()
+
+  for face in bm.faces:
+    face.select_set(True)
+  
+  bpy.ops.mesh.bisect(plane_co=bisect_point, plane_no=bisect_plane_normal)
+
+  bm.verts.ensure_lookup_table()
+  bm.edges.ensure_lookup_table()
+  bm.faces.ensure_lookup_table()
+
+  axis = (e.verts[1].co - e.verts[0].co).normalized()
+  axis_point = (e.verts[0].co + e.verts[1].co) / 2
+  
+  Ti = mathutils.Matrix.Translation(axis_point * -1)
+  R = mathutils.Matrix.Rotation(angle, 4, axis)
+  T = mathutils.Matrix.Translation(axis_point)
+  
+  TRTi = T @ R @ Ti
+
+  v.co = TRTi @ v.co
+  
+  bm.free()
+  
+  
 def rotate_v_around_e(v_index, e_index, angle=math.pi):
   bpy.ops.object.mode_set(mode = 'OBJECT')
   obj = bpy.context.active_object
