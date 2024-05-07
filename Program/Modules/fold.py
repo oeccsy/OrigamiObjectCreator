@@ -3,12 +3,6 @@ import bmesh
 import mathutils
 import math
 
-def v2v_fold():
-  return 1
-
-def e2e_fold():
-  return 1
-
 def perpendicular_bisect(v1_index, v2_index):
   bpy.ops.object.mode_set(mode = 'OBJECT')
   obj = bpy.context.active_object
