@@ -56,15 +56,15 @@ def angle_bisect(e1_index, e2_index):
   e1 = bm.edges[e1_index]
   e2 = bm.edges[e2_index]
   
-  e1_unit = (e1.verts[1].co - e1.verts[0].co).normalized()
-  e2_unit = (e2.verts[1].co - e2.verts[0].co).normalized()
+  intersection_points = mathutils.geometry.intersect_line_line(e1.verts[0].co, e1.verts[1].co, e2.verts[0].co, e2.verts[1].co)
+  intersection_point = intersection_points[0]
+  
+  e1_unit = ((e1.verts[0].co - intersection_point) + (e1.verts[1].co - intersection_point)).normalized()
+  e2_unit = ((e2.verts[0].co - intersection_point) + (e2.verts[1].co - intersection_point)).normalized()
   
   angle_bisector = (e1_unit + e2_unit)
   face_normal = e1_unit.cross(e2_unit)
   bisect_plane_normal = angle_bisector.cross(face_normal).normalized()
-  
-  intersection_points = mathutils.geometry.intersect_line_line(e1.verts[0].co, e1.verts[1].co, e2.verts[0].co, e2.verts[1].co)
-  intersection_point = intersection_points[0]
   
   for face in bm.faces:
     face.select_set(True)
@@ -138,15 +138,15 @@ def icecream_fold(e1_index, e2_index):
   e1 = bm.edges[e1_index]
   e2 = bm.edges[e2_index]
   
-  e1_unit = (e1.verts[1].co - e1.verts[0].co).normalized()
-  e2_unit = (e2.verts[1].co - e2.verts[0].co).normalized()
+  intersection_points = mathutils.geometry.intersect_line_line(e1.verts[0].co, e1.verts[1].co, e2.verts[0].co, e2.verts[1].co)
+  intersection_point = intersection_points[0]
+  
+  e1_unit = ((e1.verts[0].co - intersection_point) + (e1.verts[1].co - intersection_point)).normalized()
+  e2_unit = ((e2.verts[0].co - intersection_point) + (e2.verts[1].co - intersection_point)).normalized()
   
   angle_bisector = (e1_unit + e2_unit)
   face_normal = e1_unit.cross(e2_unit)
   bisect_plane_normal = angle_bisector.cross(face_normal).normalized()
-  
-  intersection_points = mathutils.geometry.intersect_line_line(e1.verts[0].co, e1.verts[1].co, e2.verts[0].co, e2.verts[1].co)
-  intersection_point = intersection_points[0]
   
   for face in bm.faces:
     face.select_set(True)
