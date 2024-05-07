@@ -265,7 +265,7 @@ def reverse_fold(v_index, e_indices):
   bm.free()
 
 
-def axis_fold(v_index, v1_index, v2_index, angle=math.pi):
+def v1v2_axis_fold(v_index, v1_index, v2_index, angle=math.pi):
   bpy.ops.object.mode_set(mode = 'OBJECT')
   obj = bpy.context.active_object
   
@@ -316,7 +316,7 @@ def axis_fold(v_index, v1_index, v2_index, angle=math.pi):
   bm.free()
 
 
-def axis_fold(v_index, e_index, angle=math.pi):
+def e_axis_fold(v_index, e_index, angle=math.pi):
   bpy.ops.object.mode_set(mode = 'OBJECT')
   obj = bpy.context.active_object
   
