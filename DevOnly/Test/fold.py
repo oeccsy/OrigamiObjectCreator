@@ -3,8 +3,6 @@ import bmesh
 import mathutils
 import math
 
-from mathutils.geometry import *
-
 def v2v_fold():
   return 1
 
@@ -71,7 +69,7 @@ def angle_bisect(e1_index, e2_index):
   face_normal = e1_unit.cross(e2_unit)
   bisect_plane_normal = angle_bisector.cross(face_normal).normalized()
   
-  intersection_points = intersect_line_line(e1.verts[0].co, e1.verts[1].co, e2.verts[0].co, e2.verts[1].co)
+  intersection_points = mathutils.geometry.intersect_line_line(e1.verts[0].co, e1.verts[1].co, e2.verts[0].co, e2.verts[1].co)
   intersection_point = intersection_points[0]
   
   for face in bm.faces:
@@ -153,7 +151,7 @@ def icecream_fold(e1_index, e2_index):
   face_normal = e1_unit.cross(e2_unit)
   bisect_plane_normal = angle_bisector.cross(face_normal).normalized()
   
-  intersection_points = intersect_line_line(e1.verts[0].co, e1.verts[1].co, e2.verts[0].co, e2.verts[1].co)
+  intersection_points = mathutils.geometry.intersect_line_line(e1.verts[0].co, e1.verts[1].co, e2.verts[0].co, e2.verts[1].co)
   intersection_point = intersection_points[0]
   
   for face in bm.faces:
@@ -271,19 +269,3 @@ def reverse_fold(v_index, e_indices):
   target_vertex.co = TRTi @ target_vertex.co
   
   bm.free()
-
-
-
-def fish_fold():
-  return 1
-
-def double_boat_fold():
-  return 1
-
-def pocket_fold():
-  return 1
-
-triangle_fold(1,2)
-perpendicular_bisect(0,3)
-angle_bisect(5,6)
-reverse_fold(0, [10,11])
