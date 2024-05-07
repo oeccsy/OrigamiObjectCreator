@@ -232,6 +232,47 @@ def door_fold(e1_index, e2_index):
       target_vert.co = TRTi @ target_vert.co
   
   bm.free()
+  
+
+def reverse_fold(v_index, e_indices):
+  bpy.ops.object.mode_set(mode = 'OBJECT')
+  obj = bpy.context.active_object
+  
+  bpy.ops.object.mode_set(mode='EDIT')
+  bpy.context.tool_settings.mesh_select_mode = (False, False, True)
+  bpy.ops.mesh.select_all(action='DESELECT')
+  
+  bm = bmesh.from_edit_mesh(obj.data)
+
+  bm.select_flush(False)
+  bm.verts.ensure_lookup_table()
+  bm.edges.ensure_lookup_table()
+  bm.faces.ensure_lookup_table()
+  
+  e1 = bm.edges[e_indices[0]]
+  e2 = bm.edges[e_indices[1]]
+  
+  e1_unit = (e1.verts[1].co - e1.verts[0].co).normalized()
+  e2_unit = (e2.verts[1].co - e2.verts[0].co).normalized()
+  
+  e1_middle = (e1.verts[0].co + e1.verts[1].co) / 2
+  e2_middle = (e2.verts[0].co + e2.verts[1].co) / 2
+  
+  axis = (e1_unit + e2_unit).normalized()
+  axis_point = (e1_middle + e2_middle) / 2
+  
+  Ti = mathutils.Matrix.Translation(axis_point * -1)
+  R = mathutils.Matrix.Rotation(math.pi, 4, axis)
+  T = mathutils.Matrix.Translation(axis_point)
+  
+  TRTi = T @ R @ Ti
+
+  target_vertex = bm.verts[v_index]
+  target_vertex.co = TRTi @ target_vertex.co
+  
+  bm.free()
+
+
 
 def fish_fold():
   return 1
@@ -242,5 +283,7 @@ def double_boat_fold():
 def pocket_fold():
   return 1
 
-door_fold(0,2)
-door_fold(1,5)
+triangle_fold(1,2)
+perpendicular_bisect(0,3)
+angle_bisect(5,6)
+reverse_fold(0, [10,11])
