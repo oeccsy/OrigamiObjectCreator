@@ -265,7 +265,7 @@ def reverse_fold(v_index, e_indices):
   bm.free()
   
 
-def rotate_v_around_e(v_index, e_index):
+def rotate_v_around_e(v_index, e_index, angle=math.pi):
   bpy.ops.object.mode_set(mode = 'OBJECT')
   obj = bpy.context.active_object
   
@@ -287,7 +287,7 @@ def rotate_v_around_e(v_index, e_index):
   axis_point = (e.verts[0].co + e.verts[1].co) / 2
   
   Ti = mathutils.Matrix.Translation(axis_point * -1)
-  R = mathutils.Matrix.Rotation(math.pi, 4, axis)
+  R = mathutils.Matrix.Rotation(angle * 0.995, 4, axis)
   T = mathutils.Matrix.Translation(axis_point)
   
   TRTi = T @ R @ Ti
