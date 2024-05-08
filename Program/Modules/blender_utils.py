@@ -20,4 +20,7 @@ def create_new_plane(name='plane'):
   
 
 def fbx_export(name='result'):
-  bpy.ops.export_scene.fbx(filepath=str(os.path.dirname(os.path.realpath(__file__)))+ "\\..\\Output\\" + name+".fbx", object_types={'MESH'}, use_mesh_modifiers=False, add_leaf_bones=False, bake_anim=False)
+  bpy.ops.export_scene.fbx(filepath=str(os.path.dirname(os.path.realpath(__file__))) + "\\..\\Output\\" + name + ".fbx", object_types={'MESH'}, use_mesh_modifiers=False, add_leaf_bones=False, bake_anim=False)
+  
+def stl_export(name='result'):
+  bpy.ops.export_mesh.stl(filepath=str(os.path.dirname(os.path.realpath(__file__))) + "\\..\\Output\\" + name + ".stl")
