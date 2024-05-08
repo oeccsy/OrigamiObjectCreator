@@ -1,6 +1,6 @@
 from Modules.fold import *
 
-def create_papercrane():
+def create_paper_crane():
   triangle_fold(2,1)
   triangle_fold(3,0)
 
