@@ -1,7 +1,12 @@
 # OrigamiObjectCreator
-> ### 종이접기를 이용한 절차적 메쉬 생성
+> ### 종이접기를 이용한 절차적 모델링
+```
+blender를 이용해서 쉽게 종이접기 모델링을 만들어 낼 수 있는 도구 입니다.
+다양한 방법의 종이 접기 기능을 제공합니다.
+```
 
-## 결과물
+<br>
+
 <div align="center">
   <table>
     <tr>
@@ -15,6 +20,29 @@
   </table>
 </div>
 
+<div align="center">
+  <table>
+    <tr>
+      <th> 개발 환경 </th>
+      <th> 개발 기간 </th>
+      <th> 개발 인원 </th>
+    </tr>  
+    <tr>
+      <td align="center"> <code> blender </code> <code> python </code> </td>
+      <td align="center"> <code> 24.04.27 ~ 24.05.09 </code> </td>
+      <td align="center"> <code> 본인 1명 </code> </td>
+    </tr>
+  </table>
+</div>
 
-## 라이센스
+<br>
+
+## Relate Project
+- [RandomObjectCreator](https://github.com/oeccsy/RandomObjectCreator) ( 21.11.26 ~ 21.12.21 )
+  
+해당 프로젝트는 기존의 절차적 모델링 프로젝트에 종이접기를 접목하여 개발하였습니다.
+
+<br>
+
+## License
 [blender](https://www.blender.org/)의 라이센스 정책에 따라 GPL 라이센스를 적용합니다.
