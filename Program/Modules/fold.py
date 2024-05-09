@@ -38,6 +38,7 @@ def perpendicular_bisect(v1_index, v2_index):
   
   bm.free()
   
+  
 def angle_bisect(e1_index, e2_index):
   bpy.ops.object.mode_set(mode = 'OBJECT')
   obj = bpy.context.active_object
@@ -70,6 +71,45 @@ def angle_bisect(e1_index, e2_index):
     face.select_set(True)
   
   bpy.ops.mesh.bisect(plane_co=intersection_point, plane_no=bisect_plane_normal)
+  
+  bm.verts.ensure_lookup_table()
+  bm.edges.ensure_lookup_table()
+  bm.faces.ensure_lookup_table()
+  
+  bm.free()
+
+
+def parallel_bisect(e1_index, e2_index):
+  bpy.ops.object.mode_set(mode = 'OBJECT')
+  obj = bpy.context.active_object
+  
+  bpy.ops.object.mode_set(mode='EDIT')
+  bpy.context.tool_settings.mesh_select_mode = (False, False, True)
+  bpy.ops.mesh.select_all(action='DESELECT')
+  
+  bm = bmesh.from_edit_mesh(obj.data)
+
+  bm.select_flush(False)
+  bm.verts.ensure_lookup_table()
+  bm.edges.ensure_lookup_table()
+  bm.faces.ensure_lookup_table()
+  
+  e1 = bm.edges[e1_index]
+  e2 = bm.edges[e2_index]
+  
+  A,B = [v.co for v in e1.verts]
+  C,D = [v.co for v in e2.verts]
+
+  face_normal = (C-A).cross(D-A).normalized()
+  e1_unit = (B-A).normalized()
+  
+  bisect_point = (A+B+C+D) / 4
+  bisect_plane_normal = face_normal.cross(e1_unit).normalized()
+
+  for face in bm.faces:
+    face.select_set(True)
+  
+  bpy.ops.mesh.bisect(plane_co=bisect_point, plane_no=bisect_plane_normal)
   
   bm.verts.ensure_lookup_table()
   bm.edges.ensure_lookup_table()
@@ -198,6 +238,7 @@ def icecream_fold(e1_index, e2_index):
       vert.co = TRTi @ vert.co
   
   bm.free()
+
 
 def door_fold(e1_index, e2_index):
   bpy.ops.object.mode_set(mode = 'OBJECT')
