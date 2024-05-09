@@ -217,11 +217,14 @@ def door_fold(e1_index, e2_index):
   e1 = bm.edges[e1_index]
   e2 = bm.edges[e2_index]
   
-  e1_middle = (e1.verts[0].co + e1.verts[1].co) / 2
-  e2_middle = (e2.verts[0].co + e2.verts[1].co) / 2
+  A,B = [v.co for v in e1.verts]
+  C,D = [v.co for v in e2.verts]
+
+  face_normal = (C-A).cross(D-A).normalized()
+  e1_unit = (B-A).normalized()
   
-  bisect_point = (e1_middle + e2_middle) / 2
-  bisect_plane_normal = (e2_middle - e1_middle).normalized()
+  bisect_point = (A+B+C+D) / 4
+  bisect_plane_normal = face_normal.cross(e1_unit).normalized()
 
   for face in bm.faces:
     face.select_set(True)
