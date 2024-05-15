@@ -1,10 +1,11 @@
 # OrigamiObjectCreator
 > ### 종이접기를 이용한 절차적 모델링
 ```
-blender를 이용해서 쉽게 종이접기 모델링을 만들어 낼 수 있는 도구 입니다.
-다양한 방법의 종이 접기 기능을 제공합니다.
-```
+종이접기 규칙에 따라 오브젝트를 스크립트로 작성하여 만들어 낼 수 있도록 하는 도구입니다.
 
+blender의 scripting에 사용할 수 있도록 python 모듈인 bpy를 이용하여 module을 만들었으며,
+실행 하는 경우 스크립트 형태로 존재하는 모델이 3D 오브젝트 형태로 생성되는 프로그램을 만들었습니다.  
+```
 <br>
 
 <div align="center">
@@ -36,6 +37,13 @@ blender를 이용해서 쉽게 종이접기 모델링을 만들어 낼 수 있�
 </div>
 
 <br>
+
+## How to use
+<img src="https://github.com/oeccsy/OrigamiObjectCreator/assets/77562357/8bd9562f-5dc3-42e7-835c-160f7930c19b" width="852px" height="480px"/>  
+
+- [`fold.py`](https://github.com/oeccsy/OrigamiObjectCreator/blob/main/Program/Modules/fold.py) module을 blender editor에 적용합니다. [[적용 방법]](https://github.com/oeccsy/OrigamiObjectCreator/issues/3)
+- blender scripting에 진입합니다.
+- 원하는 vertex의 index를 확인하며 코드를 작성합니다. [[원하는 vertex의 index 확인 방법]](https://github.com/oeccsy/OrigamiObjectCreator/issues/4)
 
 ## Relate Project
 - [RandomObjectCreator](https://github.com/oeccsy/RandomObjectCreator) ( 21.11.26 ~ 21.12.21 )
