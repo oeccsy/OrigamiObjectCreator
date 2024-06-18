@@ -45,6 +45,10 @@ blender의 scripting에 사용할 수 있도록 python 모듈인 bpy를 이용�
 - blender scripting에 진입합니다.
 - 원하는 vertex의 index를 확인하며 코드를 작성합니다. [[원하는 vertex의 index 확인 방법]](https://github.com/oeccsy/OrigamiObjectCreator/issues/4)
 
+## Feature
+- 다양한 Fold 기능 구현
+    - https://github.com/oeccsy/OrigamiObjectCreator/issues/1 
+
 ## Relate Project
 - [RandomObjectCreator](https://github.com/oeccsy/RandomObjectCreator) ( 21.11.26 ~ 21.12.21 )
   
