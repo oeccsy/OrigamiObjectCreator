@@ -30,7 +30,8 @@ blender의 scripting에 사용할 수 있도록 python 모듈인 bpy를 이용�
     </tr>  
     <tr>
       <td align="center"> <code> blender </code> <code> python </code> </td>
-      <td align="center"> <code> 24.04.27 ~ 24.05.09 </code> </td>
+      <td align="center"> <code> 21.12.29 ~ 22.01.27 </code> <br>
+                          <code> 24.04.27 ~ 24.05.09 </code> </td>
       <td align="center"> <code> 본인 1명 </code> </td>
     </tr>
   </table>
@@ -46,8 +47,7 @@ blender의 scripting에 사용할 수 있도록 python 모듈인 bpy를 이용�
 - 원하는 vertex의 index를 확인하며 코드를 작성합니다. [[원하는 vertex의 index 확인 방법]](https://github.com/oeccsy/OrigamiObjectCreator/issues/4)
 
 ## Feature
-- 다양한 Fold 기능 구현
-    - https://github.com/oeccsy/OrigamiObjectCreator/issues/1 
+- [다양한 Fold 기능 구현](https://github.com/oeccsy/OrigamiObjectCreator/issues/1) 
 
 ## Relate Project
 - [RandomObjectCreator](https://github.com/oeccsy/RandomObjectCreator) ( 21.11.26 ~ 21.12.21 )
