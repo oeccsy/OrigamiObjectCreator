@@ -23,7 +23,7 @@ def init_objects_data() -> str:
   for id_data in bpy.data.objects:
         bpy.data.objects.remove(id_data)
     
-    return f"init done"
+  return f"init done"
         
 @mcp.tool()
 def create_new_plane(name='plane') -> str:
