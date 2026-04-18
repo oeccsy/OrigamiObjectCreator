@@ -1,9 +1,11 @@
+from mcp_instance import mcp
 import bpy
 import bmesh
 import mathutils
 import math
 
-def perpendicular_bisect(v1_index, v2_index):
+@mcp.tool()
+def perpendicular_bisect(v1_index, v2_index) -> str:
   bpy.ops.object.mode_set(mode = 'OBJECT')
   obj = bpy.context.active_object
   
@@ -38,8 +40,10 @@ def perpendicular_bisect(v1_index, v2_index):
   
   bm.free()
   
+  return f"done"
   
-def angle_bisect(e1_index, e2_index):
+@mcp.tool()
+def angle_bisect(e1_index, e2_index) -> str:
   bpy.ops.object.mode_set(mode = 'OBJECT')
   obj = bpy.context.active_object
   
@@ -77,9 +81,11 @@ def angle_bisect(e1_index, e2_index):
   bm.faces.ensure_lookup_table()
   
   bm.free()
+  
+  return f"done"
 
-
-def parallel_bisect(e1_index, e2_index):
+@mcp.tool()
+def parallel_bisect(e1_index, e2_index) -> str:
   bpy.ops.object.mode_set(mode = 'OBJECT')
   obj = bpy.context.active_object
   
@@ -117,8 +123,10 @@ def parallel_bisect(e1_index, e2_index):
   
   bm.free()
   
+  return f"done"
   
-def bisect(plane_co, plane_no):
+@mcp.tool()
+def bisect(plane_co, plane_no) -> str:
   bpy.ops.object.mode_set(mode = 'OBJECT')
   obj = bpy.context.active_object
   
@@ -143,9 +151,11 @@ def bisect(plane_co, plane_no):
   bm.faces.ensure_lookup_table()
   
   bm.free()
+  
+  return f"done"
 
-
-def triangle_fold(v1_index, v2_index):
+@mcp.tool()
+def triangle_fold(v1_index, v2_index) -> str:
   bpy.ops.object.mode_set(mode = 'OBJECT')
   obj = bpy.context.active_object
   
@@ -187,8 +197,10 @@ def triangle_fold(v1_index, v2_index):
   
   bm.free()
   
-
-def icecream_fold(e1_index, e2_index):
+  return f"done"
+  
+@mcp.tool()
+def icecream_fold(e1_index, e2_index) -> str:
   bpy.ops.object.mode_set(mode = 'OBJECT')
   obj = bpy.context.active_object
   
@@ -238,9 +250,11 @@ def icecream_fold(e1_index, e2_index):
       vert.co = TRTi @ vert.co
   
   bm.free()
+  
+  return f"done"
 
-
-def door_fold(e1_index, e2_index):
+@mcp.tool()
+def door_fold(e1_index, e2_index) -> str:
   bpy.ops.object.mode_set(mode = 'OBJECT')
   obj = bpy.context.active_object
   
@@ -297,8 +311,10 @@ def door_fold(e1_index, e2_index):
   
   bm.free()
   
-
-def reverse_fold(v_index, e_indices):
+  return f"done"
+  
+@mcp.tool()
+def reverse_fold(v_index, e_indices) -> str:
   bpy.ops.object.mode_set(mode = 'OBJECT')
   obj = bpy.context.active_object
   
@@ -335,9 +351,11 @@ def reverse_fold(v_index, e_indices):
   target_vertex.co = TRTi @ target_vertex.co
   
   bm.free()
+  
+  return f"done"
 
-
-def v1v2_axis_fold(v_index, v1_index, v2_index, angle=math.pi):
+@mcp.tool()
+def v1v2_axis_fold(v_index, v1_index, v2_index, angle=math.pi) -> str:
   bpy.ops.object.mode_set(mode = 'OBJECT')
   obj = bpy.context.active_object
   
@@ -386,9 +404,11 @@ def v1v2_axis_fold(v_index, v1_index, v2_index, angle=math.pi):
   target_vertex.co = TRTi @ target_vertex.co
   
   bm.free()
+  
+  return f"done"
 
-
-def e_axis_fold(v_index, e_index, angle=math.pi):
+@mcp.tool()
+def e_axis_fold(v_index, e_index, angle=math.pi) -> str:
   bpy.ops.object.mode_set(mode = 'OBJECT')
   obj = bpy.context.active_object
   
@@ -439,8 +459,10 @@ def e_axis_fold(v_index, e_index, angle=math.pi):
   
   bm.free()
   
+  return f"done"
   
-def rotate_v_around_e(v_index, e_index, angle=math.pi):
+@mcp.tool()
+def rotate_v_around_e(v_index, e_index, angle=math.pi) -> str:
   bpy.ops.object.mode_set(mode = 'OBJECT')
   obj = bpy.context.active_object
   
@@ -470,3 +492,5 @@ def rotate_v_around_e(v_index, e_index, angle=math.pi):
   v.co = TRTi @ v.co
   
   bm.free()
+  
+  return f"done"

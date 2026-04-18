@@ -1,6 +1,11 @@
-from Modules.fold import *
+from mcp_instance import mcp
+from tools.fold import *
 
-def create_paper_crane():
+@mcp.tool()
+def create_paper_crane() -> str:
+  """
+  종이접기를 통해 paper crane을 생성합니다.
+  """
   triangle_fold(2,1)
   triangle_fold(3,0)
 
@@ -36,4 +41,6 @@ def create_paper_crane():
 
   bisect((0.5,0.7,0),(-1,1,0))
   rotate_v_around_e(2,196)
+  
+  return f"create paper crane done"
 

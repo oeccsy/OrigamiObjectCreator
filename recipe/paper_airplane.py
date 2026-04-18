@@ -1,6 +1,11 @@
-from Modules.fold import *
+from mcp_instance import mcp
+from tools.fold import *
 
+@mcp.tool()
 def create_paper_airplane():
+  """
+  종이접기를 통해 paper airplane을 생성합니다.
+  """
   parallel_bisect(1,3)
   icecream_fold(4,6)
   icecream_fold(0,6)
@@ -26,5 +31,7 @@ def create_paper_airplane():
 
   rotate_v_around_e(3,31,math.pi/2)
   rotate_v_around_e(1,39,math.pi/2)
+  
+  return f"create paper crane done"
 
   
