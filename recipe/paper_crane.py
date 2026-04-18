@@ -4,7 +4,8 @@ from tools.fold import *
 @mcp.tool()
 def create_paper_crane() -> str:
   """
-  종이접기를 통해 paper crane을 생성합니다.
+  종이접기 기법을 사용하여 현재 활성 오브젝트(평면 메시)를 종이학(paper crane) 형태로 변형합니다.
+  init_objects_data()와 create_new_plane()으로 씬을 준비한 후 호출해야 합니다.
   """
   triangle_fold(2,1)
   triangle_fold(3,0)
